@@ -1,0 +1,263 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Generic - Editorial by HTML5 UP</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<link href="assets/css/layout.css" rel="stylesheet">
+		<style>
+			.slidecontainer {
+			  width: 70%;
+			}
+			
+			.slider {
+			  -webkit-appearance: none;
+			  width: 100%;
+			  height: 15px;
+			  background: #d3d3d3;
+			  outline: none;
+			  opacity: 0.7;
+			  -webkit-transition: .2s;
+			  transition: opacity .2s;
+			}
+			
+			.slider:hover {
+			  opacity: 1;
+			}
+			
+			.slider::-webkit-slider-thumb {
+			  -webkit-appearance: none;
+			  appearance: none;
+			  width: 25px;
+			  height: 15px;
+			  background: #fca652;
+			  cursor: pointer;
+			}
+			
+			.slider::-moz-range-thumb {
+			  width: 25px;
+			  height: 15px;
+			  background: #fca652;
+			  cursor: pointer;
+			}
+			</style>
+	</head>
+	<body onload="InitDemo();" class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+							<header id="header">
+								<a href="index.html" class="logo"><strong>Computação Gráfica</strong> Aulas Práticas</a>
+								<!-- <ul class="icons">
+									<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+									<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+									<li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
+									<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+									<li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li>
+								</ul> -->
+							</header>
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h1>Introdução ao WebGL</h1>
+									</header>
+
+									<p><a target="_blank" href="https://developer.mozilla.org/pt-BR/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL">Site de referência</a> para o exemplo visto em aula.</p>
+									<div class="slidecontainer">
+										
+										<i>Red</i> (Vermelho) = <span id='vRed'>0</span>
+										<input type="range"  min="0" max="255" value="0" class="slider" id="redValue">
+
+										<i>Green</i> (Verde) = <span id='vGreen'>0</span>
+										<input type="range"  min="0" max="255" value="0" class="slider" id="greenValue">
+
+										<i>Blue</i> (Azul) = <span id='vBlue'>0</span>
+										<input type="range"  min="0" max="255" value="0" class="slider" id="blueValue">
+									  </div>
+									  <p>Cor em hexadecimal: #<span id='colorFinal'></span></p>
+									<!--span class="image main"><img src="images/pic11.jpg" alt="" /></span-->
+								
+									<canvas id="glCanvas" style="border: 2px solid black" width="640" height="480"></canvas>
+
+									<script>
+										var vRed = 0.;
+										var vGreen = 0.;
+										var vBlue = 0.;
+										var alpha = 100.; 
+										$("#redValue").on("input change", function() { 
+											$('#vRed').html(this.value);
+											vRed = this.value;
+											
+											
+											main();
+										});
+										$("#greenValue").on("input change", function() { 
+											$('#vGreen').html(this.value);
+											vGreen = this.value;
+											main();
+										});
+										$("#blueValue").on("input change", function() { 
+											$('#vBlue').html(this.value);
+											vBlue = this.value;
+											main();
+										});
+										main();
+										//
+										// começa aqui
+										//
+										function main() {
+											var hexStringR = Number(vRed).toString(16).toUpperCase();
+											var hexStringG = Number(vGreen).toString(16).toUpperCase();
+											var hexStringB = Number(vBlue).toString(16).toUpperCase();
+
+											if (hexStringR.length<2){
+												hexStringR = "0"+hexStringR;
+											}
+
+											if (hexStringG.length<2){
+												hexStringG = "0"+hexStringG;
+											}
+
+											if (hexStringB.length<2){
+												hexStringB = "0"+hexStringB;
+											}
+
+											$('#colorFinal').html(hexStringR+hexStringG+hexStringB);
+										const canvas = document.querySelector("#glCanvas");
+										// Inicializa o contexto GL
+										const gl = canvas.getContext("webgl");
+
+										// Só continua se o WebGL estiver disponível e funcionando
+										if (!gl) {
+											alert("Incapaz de inicializar o WebGL.Seu navegador ou sua máquina não suporta.");
+											return;
+										}
+
+										// Define a cor para preto totalmente opaca (sem transparência)
+										gl.clearColor(vRed/255., vGreen/255., vBlue/255., alpha/100.);
+										// Limpa o buffer de cores com uma cor específica
+										gl.clear(gl.COLOR_BUFFER_BIT);
+										}
+									</script>
+
+
+								</section>
+								<section >
+									Para visualização da cena abaixo foi utilizado como base o projeto de <a href="https://github.com/sessamekesh/IndigoCS-webgl-tutorials/tree/master/01%20-%20Simple%20Triangle" target="_blank">sessamekesh/IndigoCS-webgl-tutorials</a>.<br>
+									<canvas id="glCanvasTriangle" style="border: 2px solid black" width="320" height="240"></canvas>
+									<br>
+									Vertex Shader:
+									<br>
+									<textarea id="vertex-shader" height="400" class="playable-code">
+precision mediump float;
+attribute vec2 vertPosition;
+attribute vec3 vertColor;
+varying vec3 fragColor;
+
+void main()
+{
+  fragColor = vertColor;
+  gl_Position = vec4(vertPosition.x, vertPosition.y, 0.0, 1.0);
+}
+									</textarea>
+									Fragment Sheder:
+									<textarea id="fragment-shader" class="playable-code">
+precision mediump float;
+
+varying vec3 fragColor;
+void main()
+{
+  gl_FragColor = vec4(fragColor, 1.0);
+}
+									</textarea>
+								</section>
+								<script src="js/aula_1.js"></script>
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+								<section id="search" class="alt">
+									<form method="post" action="#">
+										<input type="text" name="query" id="query" placeholder="Search" />
+									</form>
+								</section>
+
+							<!-- Menu -->
+							<nav id="menu">
+								<header class="major">
+									<h2>Menu</h2>
+								</header>
+								<ul>
+									<li><a href="index.html">Início</a></li>
+									<li><a href="aula-01.html">Introdução ao WebGL</a></li>
+									<!--
+									<li><a href="generic.html">Generic</a></li>
+									<li><a href="elements.html">Elements</a></li>
+									<li>
+										<span class="opener">Submenu</span>
+										<ul>
+											<li><a href="#">Lorem Dolor</a></li>
+											<li><a href="#">Ipsum Adipiscing</a></li>
+											<li><a href="#">Tempus Magna</a></li>
+											<li><a href="#">Feugiat Veroeros</a></li>
+										</ul>
+									</li>
+									<li><a href="#">Etiam Dolore</a></li>
+									<li><a href="#">Adipiscing</a></li>
+									<li>
+										<span class="opener">Another Submenu</span>
+										<ul>
+											<li><a href="#">Lorem Dolor</a></li>
+											<li><a href="#">Ipsum Adipiscing</a></li>
+											<li><a href="#">Tempus Magna</a></li>
+											<li><a href="#">Feugiat Veroeros</a></li>
+										</ul>
+									</li>
+									<li><a href="#">Maximus Erat</a></li>
+									<li><a href="#">Sapien Mauris</a></li>
+									<li><a href="#">Amet Lacinia</a></li>
+									-->
+								</ul>
+							</nav>>
+								</nav>
+
+							<!-- Section -->
+								
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Untitled. All rights reserved. Demo Images: <a href="https://unsplash.com">Unsplash</a>. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
