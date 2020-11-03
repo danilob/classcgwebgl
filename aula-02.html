@@ -6,12 +6,13 @@
 -->
 <html>
 	<head>
-		<title>Generic - Editorial by HTML5 UP</title>
+		<title>Aula 02 - Unidade 2</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<link href="assets/css/layout.css" rel="stylesheet">
+
 		<style>
 			.slidecontainer {
 			  width: 70%;
@@ -66,106 +67,29 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-										<h1>Introdução ao WebGL</h1>
+										<h1>Aplicação de Matrizes de Transformação</h1>
 									</header>
-
-									<p><a target="_blank" href="https://developer.mozilla.org/pt-BR/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL">Site de referência</a> para o exemplo visto em aula.</p>
-									<div class="slidecontainer">
-										
-										<i>Red</i> (Vermelho) = <span id='vRed'>0</span>
-										<input type="range"  min="0" max="255" value="0" class="slider" id="redValue">
-
-										<i>Green</i> (Verde) = <span id='vGreen'>0</span>
-										<input type="range"  min="0" max="255" value="0" class="slider" id="greenValue">
-
-										<i>Blue</i> (Azul) = <span id='vBlue'>0</span>
-										<input type="range"  min="0" max="255" value="0" class="slider" id="blueValue">
-									  </div>
-									  <p>Cor em hexadecimal: #<span id='colorFinal'></span></p>
-									<!--span class="image main"><img src="images/pic11.jpg" alt="" /></span-->
-								
-									<canvas id="glCanvas" style="border: 2px solid black" width="640" height="480"></canvas>
-
-									<script>
-										var vRed = 0.;
-										var vGreen = 0.;
-										var vBlue = 0.;
-										var alpha = 100.; 
-										$("#redValue").on("input change", function() { 
-											$('#vRed').html(this.value);
-											vRed = this.value;
-											
-											
-											main();
-										});
-										$("#greenValue").on("input change", function() { 
-											$('#vGreen').html(this.value);
-											vGreen = this.value;
-											main();
-										});
-										$("#blueValue").on("input change", function() { 
-											$('#vBlue').html(this.value);
-											vBlue = this.value;
-											main();
-										});
-										main();
-										//
-										// começa aqui
-										//
-										function main() {
-											var hexStringR = Number(vRed).toString(16).toUpperCase();
-											var hexStringG = Number(vGreen).toString(16).toUpperCase();
-											var hexStringB = Number(vBlue).toString(16).toUpperCase();
-
-											if (hexStringR.length<2){
-												hexStringR = "0"+hexStringR;
-											}
-
-											if (hexStringG.length<2){
-												hexStringG = "0"+hexStringG;
-											}
-
-											if (hexStringB.length<2){
-												hexStringB = "0"+hexStringB;
-											}
-
-											$('#colorFinal').html(hexStringR+hexStringG+hexStringB);
-										const canvas = document.querySelector("#glCanvas");
-										// Inicializa o contexto GL
-										const gl = canvas.getContext("webgl");
-
-										// Só continua se o WebGL estiver disponível e funcionando
-										if (!gl) {
-											alert("Incapaz de inicializar o WebGL.Seu navegador ou sua máquina não suporta.");
-											return;
-										}
-
-										// Define a cor para preto totalmente opaca (sem transparência)
-										gl.clearColor(vRed/255., vGreen/255., vBlue/255., alpha/100.);
-										// Limpa o buffer de cores com uma cor específica
-										gl.clear(gl.COLOR_BUFFER_BIT);
-										}
-									</script>
-
-
-								</section>
-								<section >
+									
 									Para visualização da cena abaixo foi utilizado como base o projeto de <a href="https://github.com/sessamekesh/IndigoCS-webgl-tutorials/tree/master/01%20-%20Simple%20Triangle" target="_blank">sessamekesh/IndigoCS-webgl-tutorials</a>.<br>
-									<canvas id="glCanvasTriangle" style="border: 2px solid black" width="320" height="240"></canvas>
+									<canvas id="glCanvasTriangle" style="border: 2px solid black" width="800" height="600"></canvas>
 									<br>
 									Vertex Shader:
 									<br>
 									<textarea id="vertex-shader" height="400" class="playable-code">
-precision mediump float;
-attribute vec2 vertPosition;
+precision mediump float; 
+attribute vec3 vertPosition;
 attribute vec3 vertColor;
 varying vec3 fragColor;
+uniform mat4 mWorld;
+uniform mat4 mView;
+uniform mat4 mProj;
 
 void main()
 {
-  fragColor = vertColor;
-  gl_Position = vec4(vertPosition.x, vertPosition.y, 0.0, 1.0);
+	fragColor = vertColor;
+	gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 }
+										
 									</textarea>
 									Fragment Sheder:
 									<textarea id="fragment-shader" class="playable-code">
@@ -178,7 +102,9 @@ void main()
 }
 									</textarea>
 								</section>
-								<script src="js/aula_1.js"></script>
+								<script src="js/gl-matrix.js"></script>
+
+								<script src="js/aula_2.js"></script>
 
 						</div>
 					</div>
