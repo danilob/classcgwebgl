@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Aula 03 - Unidade 2</title>
+		<title>Aula 04 - Unidade 2</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
@@ -67,8 +67,10 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-										<h1>Coloração de Phong</h1>
-
+										<h1>Aplicando Textura</h1>
+									</header>
+									
+									Para visualização da cena abaixo foi utilizado como base o projeto de <a href="https://github.com/sessamekesh/IndigoCS-webgl-tutorials/tree/master/01%20-%20Simple%20Triangle" target="_blank">sessamekesh/IndigoCS-webgl-tutorials</a>.<br>
 									<canvas id="glCanvasTriangle" style="border: 2px solid black" width="800" height="600"></canvas>
 									<br>
 									Vertex Shader:
@@ -76,18 +78,18 @@
 									<textarea id="vertex-shader" height="400" class="playable-code">
 precision mediump float; 
 attribute vec3 vertPosition;
-attribute vec3 vertNormal;
-varying vec3 fragNormal;
-varying vec3 vertPos;
+attribute vec3 vertColor;
+varying vec3 fragColor;
+attribute vec2 vertTexCoord;
+varying vec2 fragTexCoord;
 uniform mat4 mWorld;
 uniform mat4 mView;
 uniform mat4 mProj;
 
 void main()
 {
-	
-	vertPos = vertPosition ;
-	fragNormal = (mWorld * vec4(vertNormal,0.0)).xyz;
+	fragColor = vertColor;
+	fragTexCoord = vertTexCoord;
 	gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);
 }
 										
@@ -96,43 +98,14 @@ void main()
 									<textarea id="fragment-shader" class="playable-code">
 precision mediump float;
 
-varying vec3 fragNormal;
-varying vec3 vertPos;
-
-uniform float Ka;   // Ambient reflection coefficient
-uniform float Kd;   // Diffuse reflection coefficient
-uniform float Ks;   // Specular reflection coefficient
-uniform float shininessVal; // Shininess
-// Material color
-uniform vec3 ambientColor;
-uniform vec3 diffuseColor;
-uniform vec3 specularColor;
-uniform vec3 lightPos; // Light position
-uniform vec3 viewer;
+varying vec3 fragColor;
+varying vec2 fragTexCoord;
+uniform sampler2D sampler; //textura
 
 void main()
 {
-	vec3 N = normalize(fragNormal);
-	vec3 L = normalize(lightPos - vertPos);
-  
-	// Lambert's cosine law
-	float lambertian = max(dot(N, L), 0.0);
-	float specular = 0.0;
-	if(lambertian > 0.0) {
-	  vec3 R = reflect(-L, N);      // Reflected light vector
-	  vec3 V = normalize(viewer-vertPos); // Vector to viewer
-	  // Compute the specular term
-	 
-	 float specAngle = max(dot(R, V), 0.0);
-	 specular = pow(specAngle, shininessVal);	  
-	  
-	  
-	}
-	gl_FragColor = vec4(Ka * ambientColor +
-						Kd * lambertian * diffuseColor +
-						Ks * specular * specularColor, 1.0);
-
-
+	gl_FragColor = texture2D(sampler, fragTexCoord);
+  //gl_FragColor = vec4(fragColor, 1.0);
 }
 									</textarea>
 								</section>
@@ -164,8 +137,7 @@ void main()
 									<li><a href="index.html">Início</a></li>
 									<li><a href="aula-01.html">Introdução ao WebGL</a></li>
 									<li><a href="aula-02.html">Aplicação Matrizes de Transformação</a></li>
-	
-	<li><a href="aula-03.html">Coloração de Phong</a></li>							
+									<li><a href="aula-03.html">Aplicação de Textura</a></li>
 									<!--
 									<li><a href="generic.html">Generic</a></li>
 									<li><a href="elements.html">Elements</a></li>

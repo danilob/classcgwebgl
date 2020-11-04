@@ -64,40 +64,40 @@ var fragmentShaderText =document.getElementById('fragment-shader').value;
 	var boxVertices = 
 	[ // X, Y, Z           R, G, B             U, V       Nx, Ny, Nz
 		// Top
-		-0.5, 0.5, -0.5,    0,1,0,
-		-0.5, 0.5, 0.5,    0,1,0,
-		0.5, 0.5, 0.5,      0,1,0,
-		0.5, 0.5, -0.5,      0,1,0,
+		-0.5, 0.5, -0.5,   0.5, 0.5, 0.5,      0,0,       0,1,0,
+		-0.5, 0.5, 0.5,    0.5, 0.5, 0.5,      0,1,       0,1,0,
+		0.5, 0.5, 0.5,     0.5, 0.5, 0.5,      1,1,       0,1,0,
+		0.5, 0.5, -0.5,    0.5, 0.5, 0.5,      1,0,       0,1,0,
 
 		// Left
-		-0.5, 0.5, 0.5,   -1,0,0,
-		-0.5, -0.5, 0.5,     -1,0,0,
-		-0.5, -0.5, -0.5,  -1,0,0,
-		-0.5, 0.5, -0.5,    -1,0,0,
+		-0.5, 0.5, 0.5,    0.75, 0.25, 0.5,    0,0,       -1,0,0,
+		-0.5, -0.5, 0.5,   0.75, 0.25, 0.5,    1,0,       -1,0,0,
+		-0.5, -0.5, -0.5,  0.75, 0.25, 0.5,    1,1,       -1,0,0,
+		-0.5, 0.5, -0.5,   0.75, 0.25, 0.5,    0,1,       -1,0,0,
 
 		// Right
-		0.5, 0.5, 0.5,         1,0,0,
-		0.5, -0.5, 0.5,     1,0,0,
-		0.5, -0.5, -0.5,     1,0,0,
-		0.5, 0.5, -0.5,       1,0,0,
+		0.5, 0.5, 0.5,    0.25, 0.25, 0.75,    1,1,       1,0,0,
+		0.5, -0.5, 0.5,   0.25, 0.25, 0.75,	   0,1,       1,0,0,
+		0.5, -0.5, -0.5,  0.25, 0.25, 0.75,    0,0,       1,0,0,
+		0.5, 0.5, -0.5,   0.25, 0.25, 0.75,    1,0,       1,0,0,
 
 		// Front
-		0.5, 0.5, 0.5,        0,0,1,
-		0.5, -0.5, 0.5,       0,0,1,
-		-0.5, -0.5, 0.5,      0,0,1,
-		-0.5, 0.5, 0.5,     0,0,1,
+		0.5, 0.5, 0.5,    0.5, 0.3, 0.15,      1,1,       0,0,1,
+		0.5, -0.5, 0.5,    0.5, 0.3, 0.15,     1,0,       0,0,1,
+		-0.5, -0.5, 0.5,    0.5, 0.3, 0.15,    0,0,       0,0,1,
+		-0.5, 0.5, 0.5,    0.5, 0.3, 0.15,     0,1,       0,0,1,
 
 		// Back
-		0.5, 0.5, -0.5,       0,0,-1,
-		0.5, -0.5, -0.5,      0,0,-1,
-		-0.5, -0.5, -0.5,     0,0,-1,
-		-0.5, 0.5, -0.5,     0,0,-1,
+		0.5, 0.5, -0.5,    0.0, 0.5, 0.15,     0,0,       0,0,-1,
+		0.5, -0.5, -0.5,    0.0, 0.5, 0.15,    0,1,       0,0,-1,
+		-0.5, -0.5, -0.5,    0.0, 0.5, 0.15,   1,1,       0,0,-1,
+		-0.5, 0.5, -0.5,    0.0, 0.5, 0.15,    1,0,       0,0,-1,
 
 		// Bottom
-		-0.5, -0.5, -0.5,     0,-1,0,
-		-0.5, -0.5, 0.5,     0,-1,0,
-		0.5, -0.5, 0.5,    0,-1,0,
-		0.5, -0.5, -0.5,      0,-1,0
+		-0.5, -0.5, -0.5,   0.0, 0.5, 0.5,     1,1,       0,-1,0,
+		-0.5, -0.5, 0.5,    0.0, 0.5, 0.5,     1,0,       0,-1,0,
+		0.5, -0.5, 0.5,     0.0, 0.5, 0.5,     0,0,       0,-1,0,
+		0.5, -0.5, -0.5,    0.0, 0.5, 0.5,     0,1,       0,-1,0
 	];
 
 	var boxIndices =
@@ -138,6 +138,8 @@ var fragmentShaderText =document.getElementById('fragment-shader').value;
 	
 
 	var positionAttribLocation = gl.getAttribLocation(program, 'vertPosition');
+	var colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
+	var texCoordAttribLocation = gl.getAttribLocation(program, 'vertTexCoord');
 	var normalAttribLocation = gl.getAttribLocation(program, 'vertNormal');
 
 	gl.vertexAttribPointer(
@@ -145,21 +147,38 @@ var fragmentShaderText =document.getElementById('fragment-shader').value;
 		3, // numero de elementos por atributo
 		gl.FLOAT, // Tipo de elemento
 		gl.FALSE, //Normalização
-		6 * Float32Array.BYTES_PER_ELEMENT, // Tamanho do vertice individual
+		11 * Float32Array.BYTES_PER_ELEMENT, // Tamanho do vertice individual
 		0 // Offset para iniciar a capturar os valores
 	);
-
+	gl.vertexAttribPointer(
+		colorAttribLocation, // Attribute location
+		3, // Number of elements per attribute
+		gl.FLOAT, // Type of elements
+		gl.FALSE,
+		11 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+		3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+	);
+	gl.vertexAttribPointer(
+		texCoordAttribLocation, // Attribute location
+		2, // Number of elements per attribute
+		gl.FLOAT, // Type of elements
+		gl.FALSE,
+		11 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+		6 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+	);
 
 	gl.vertexAttribPointer(
 		normalAttribLocation, // Attribute location
 		3, // Number of elements per attribute
 		gl.FLOAT, // Type of elements
 		gl.TRUE,
-		6 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
-		3 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
+		11 * Float32Array.BYTES_PER_ELEMENT, // Size of an individual vertex
+		8 * Float32Array.BYTES_PER_ELEMENT // Offset from the beginning of a single vertex to this attribute
 	);
 
 	gl.enableVertexAttribArray(positionAttribLocation);
+	gl.enableVertexAttribArray(colorAttribLocation);
+	gl.enableVertexAttribArray(texCoordAttribLocation);
 	gl.enableVertexAttribArray(normalAttribLocation);
 
 	gl.useProgram(program);
@@ -194,10 +213,10 @@ var fragmentShaderText =document.getElementById('fragment-shader').value;
 	var eyeUniformLocation = gl.getUniformLocation(program,'viewer');
 
 
-	gl.uniform1f(KaUniformLocation,0.95);
-	gl.uniform1f(KdUniformLocation,0.95);
-	gl.uniform1f(KsUniformLocation,0.95);
-	gl.uniform1f(shineUniformLocation,12.8);
+	gl.uniform1f(KaUniformLocation,0.38);
+	gl.uniform1f(KdUniformLocation,0.92);
+	gl.uniform1f(KsUniformLocation,0.8);
+	gl.uniform1f(shineUniformLocation,2);
 	gl.uniform3f(eyeUniformLocation,eye[0],eye[1],eye[2]);
 
 	var ambUniformLocation = gl.getUniformLocation(program,'ambientColor');
@@ -205,19 +224,27 @@ var fragmentShaderText =document.getElementById('fragment-shader').value;
 	var speUniformLocation = gl.getUniformLocation(program,'specularColor');
 	var poslightUniformLocation = gl.getUniformLocation(program,'lightPos');
 
-	//gold //shine 51.2 //refle 1.0 1.0 1.0
-	// gl.uniform3f(ambUniformLocation,0.24725, 0.1995, 0.0745);
-	// gl.uniform3f(diffUniformLocation,0.75164, 0.60648, 0.22648);
-	// gl.uniform3f(speUniformLocation,0.628281, 0.555802, 0.366065);
+	gl.uniform3f(ambUniformLocation,0.2,0.2,0.2);
+	gl.uniform3f(diffUniformLocation,0.1,0.5,0.1);
+	gl.uniform3f(speUniformLocation,1.0,1.0,1.0);
 	gl.uniform3f(poslightUniformLocation,0.5,1,-2);
 
-	//jade
-	gl.uniform3f(ambUniformLocation,0.135, 0.2225, 0.1575);
-	gl.uniform3f(diffUniformLocation,0.54, 0.89, 0.63);
-	gl.uniform3f(speUniformLocation,0.316228, 0.316228, 0.316228);
 
 
 
+	//Criando Textura
+	var boxTexture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, boxTexture);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	gl.texImage2D(
+		gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA,
+		gl.UNSIGNED_BYTE,
+		document.getElementById('crate-image')
+	);
+	gl.bindTexture(gl.TEXTURE_2D, null);	
 	
 	//
 	// Main render loop
@@ -259,6 +286,9 @@ var fragmentShaderText =document.getElementById('fragment-shader').value;
 		
 		gl.clearColor(241/255., 225/255., 137/255., 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		//uso da textura
+		gl.bindTexture(gl.TEXTURE_2D, boxTexture);
+		gl.activeTexture(gl.TEXTURE0);
 
 		gl.drawElements(gl.TRIANGLES, boxIndices.length, gl.UNSIGNED_SHORT,0);
 		
